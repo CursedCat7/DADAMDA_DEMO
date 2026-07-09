@@ -123,6 +123,16 @@ Now uncomment/restore the second (port 443) server block in
 docker compose -f docker-compose.prod.yml exec nginx nginx -s reload
 ```
 
+If this reload fails with `host not found in upstream "dadamda-backend"`
+(or `dadamda-frontend`): the template's `proxy_pass` targets are resolved
+at request time via `resolver 127.0.0.11` + `set $var; proxy_pass $var;`
+specifically so this *shouldn't* happen regardless of whether DaDamDa's
+containers are up yet - if you still hit it, `nginx/conf.d/dadamda.conf`
+on the server has an older copy of this file using plain
+`proxy_pass http://dadamda-backend:8000` (resolved once at config-load
+time, which does fail this way if the container isn't up yet); re-copy
+the current `nginx/shared-nginx-dadamda.conf` and reload again.
+
 ### B3. Bring up DaDamDa itself
 
 Back in the **DaDamDa** repo directory. Only start `postgres redis backend

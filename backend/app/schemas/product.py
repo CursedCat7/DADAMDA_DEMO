@@ -18,3 +18,8 @@ class ProductListItem(BaseModel):
     status: ProductStatus
 
     model_config = {"from_attributes": True}
+
+
+class ProductDetail(ProductListItem):
+    store_id: int
+    description: str | None

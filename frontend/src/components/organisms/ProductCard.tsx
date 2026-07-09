@@ -1,9 +1,6 @@
 import Link from "next/link";
 import type { ProductListItem } from "@/lib/api/product";
-
-function formatPrice(value: number): string {
-  return `${value.toLocaleString("ko-KR")}원`;
-}
+import { formatPrice } from "@/lib/format";
 
 export function ProductCard({ product }: { product: ProductListItem }) {
   return (

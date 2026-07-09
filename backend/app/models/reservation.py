@@ -12,6 +12,7 @@ from app.models.mixins import CreatedAtMixin
 
 if TYPE_CHECKING:
     from app.models.reservation_item import ReservationItem
+    from app.models.user import User
 
 
 class Reservation(Base, CreatedAtMixin):
@@ -31,3 +32,4 @@ class Reservation(Base, CreatedAtMixin):
     pickup_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
     items: Mapped[list["ReservationItem"]] = relationship(back_populates="reservation")
+    user: Mapped["User"] = relationship()

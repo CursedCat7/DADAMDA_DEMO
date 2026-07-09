@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.enums import UserRole
@@ -18,7 +19,16 @@ def get_or_create_mock_user(db: Session, role: UserRole) -> User:
     if user is not None:
         return user
 
-    user = User(nickname=nickname, email=email, role=role)
-    db.add(user)
-    db.flush()
-    return user
+    # Check-then-insert is not atomic: two concurrent first-time mock-logins
+    # (e.g. React StrictMode double-firing an effect, or two browser tabs
+    # onboarding at once) can both pass the SELECT above before either
+    # commits. Fall back to re-reading the row on a unique-constraint clash
+    # instead of letting the second caller's request 500.
+    try:
+        user = User(nickname=nickname, email=email, role=role)
+        db.add(user)
+        db.flush()
+        return user
+    except IntegrityError:
+        db.rollback()
+        return db.execute(select(User).where(User.email == email)).scalar_one()

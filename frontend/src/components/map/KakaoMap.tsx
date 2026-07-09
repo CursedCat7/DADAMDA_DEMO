@@ -14,7 +14,7 @@ import type { MapMarket, MapSelection } from "@/lib/map/types";
 const DEMO_CURRENT_LOCATION = { lat: 37.4468, lng: 126.731 };
 
 const MISSING_KEY_MESSAGE =
-  "카카오맵 API 키가 설정되지 않았습니다. NEXT_PUBLIC_KAKAO_MAP_KEY를 확인해주세요.";
+  "서비스 준비 중 입니다.";
 
 type MarkerEntry = {
   overlay: KakaoCustomOverlay;

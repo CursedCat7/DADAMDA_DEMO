@@ -1,8 +1,10 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { Clock, ImageIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { CategoryChips } from "@/components/molecules/CategoryChips";
 import { StoreCard } from "@/components/organisms/StoreCard";
 import { getMarket, getMarketStores } from "@/lib/api/market";
@@ -53,23 +55,22 @@ export default function MarketDetailPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex h-40 items-center justify-center bg-muted text-sm text-muted-foreground">
-        시장 사진 준비중
+      <div className="flex h-40 items-center justify-center bg-secondary text-secondary-foreground/60">
+        <ImageIcon size={32} />
       </div>
 
       <div className="flex flex-col gap-2 px-4">
-        <h1 className="text-xl font-semibold">{market.name}</h1>
+        <h1 className="text-xl font-extrabold text-foreground">{market.name}</h1>
         <p className="text-sm text-muted-foreground">{market.address}</p>
-        <div className="flex flex-wrap gap-3 text-sm">
+        <div className="flex flex-wrap items-center gap-1.5 pt-1">
           {openTime && closeTime && (
-            <span className="text-muted-foreground">
-              운영시간 {openTime} - {closeTime}
-            </span>
+            <Badge variant="neutral">
+              <Clock size={12} />
+              {openTime} - {closeTime}
+            </Badge>
           )}
-          <span className="font-medium text-primary">
-            오늘 할인 {market.discount_count}개
-          </span>
-          <span className="text-muted-foreground">상점 {market.store_count}개</span>
+          <Badge variant="primary">오늘 할인 {market.discount_count}개</Badge>
+          <Badge variant="neutral">상점 {market.store_count}개</Badge>
         </div>
       </div>
 

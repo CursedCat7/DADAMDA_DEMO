@@ -1,6 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { MapPin } from "lucide-react";
+import { SearchBar } from "@/components/molecules/SearchBar";
 import { MarketCard } from "@/components/organisms/MarketCard";
 import { getMarkets } from "@/lib/api/market";
 
@@ -13,9 +15,15 @@ export default function MarketListPage() {
 
   return (
     <div className="flex flex-col gap-4 px-4 py-4">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold">시장 목록</h1>
-        <p className="text-sm text-muted-foreground">📍 인천 남동구 근처 시장</p>
+      <header className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-xl font-extrabold text-foreground">시장 둘러보기</h1>
+          <p className="flex items-center gap-1 text-sm text-muted-foreground">
+            <MapPin size={14} className="text-primary" />
+            인천 남동구 근처 시장
+          </p>
+        </div>
+        <SearchBar />
       </header>
 
       {isLoading && <p className="text-sm text-muted-foreground">불러오는 중...</p>}

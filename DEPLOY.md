@@ -177,6 +177,24 @@ by the other project) so the other project's nginx can reach them as
 `http://dadamda-backend:8000` / `http://dadamda-frontend:3000`, exactly as
 referenced in `nginx/shared-nginx-dadamda.conf`.
 
+**Known gotcha, already fixed in `.env.production.example` but worth
+understanding**: `alembic upgrade head` (or anything else backend does)
+failing with `password authentication failed for user "dadamda"` even
+though `POSTGRES_PASSWORD` and `DATABASE_URL` clearly match usually means
+`DATABASE_URL`/`REDIS_URL` are pointing at the generic hostnames
+`postgres`/`redis` instead of the container names `dadamda-postgres`/
+`dadamda-redis`. Because `backend` is attached to *two* networks here
+(`dadamda-network` and `ca_network`), and the other project almost
+certainly also has a service plainly named `postgres` (or `redis`) on
+`ca_network`, Docker's embedded DNS can resolve the generic name to
+*their* container instead of DaDamDa's own - confirmed on this exact
+server (`docker network inspect ca_network` showed `ca_postgres` sitting
+at the IP backend was actually connecting to). The container names
+(`dadamda-postgres`, `dadamda-redis`) are unique across both projects, so
+using those instead of `postgres`/`redis` in `.env` sidesteps the
+collision entirely. This class of bug is specific to Path B - Path A's
+DaDamDa-only network never has this ambiguity.
+
 Verify:
 
 ```bash

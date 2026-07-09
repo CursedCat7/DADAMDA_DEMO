@@ -13,7 +13,7 @@ TRUNCATE reservation_items, reservations, products, stores, markets, esg_stats
   RESTART IDENTITY CASCADE;
 
 INSERT INTO markets (id, name, address, latitude, longitude, created_at) VALUES
-  (1, '모래내시장', '인천 서구 모래내로', 37.505, 126.677, now());
+  (1, '모래내시장', '인천 남동구 호구포로810번길 42-8', 37.454125, 126.721461, now());
 
 INSERT INTO stores (id, market_id, name, category, description, created_at) VALUES
   (1,  1, '영희반찬',       'BANCHAN',     '매일 아침 만드는 정갈한 밑반찬',        now()),

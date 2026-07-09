@@ -103,13 +103,36 @@ docker compose -f docker-compose.prod.yml exec nginx nginx -s reload
 ### B2. Get a certificate for dadamda.duckdns.org
 
 Still from the **other project's** directory, using its existing certbot
-service (webroot at `/var/www/certbot`, shared with its nginx):
+service (webroot at `/var/www/certbot`, shared with its nginx).
+
+**That project's `certbot` service has a custom `entrypoint`** (a
+`while :; do certbot renew; sleep 12h; done` loop for auto-renewal), which
+means `docker compose run --rm certbot <anything>` ignores whatever you
+type after `certbot` and just runs that loop instead - confirmed on this
+server: the output showed it processing `cwu.duckdns.org`'s existing
+renewal config ("not yet due for renewal") instead of even attempting
+`dadamda.duckdns.org`, then appeared to hang (it didn't - it was sitting
+in `sleep 12h`). `--rm` doesn't help here since the loop keeps the
+container alive on its own.
+
+**Override the entrypoint** so your arguments actually reach `certbot`:
 
 ```bash
-docker compose -f docker-compose.prod.yml run --rm certbot \
+docker compose -f docker-compose.prod.yml run --rm --entrypoint certbot certbot \
   certonly --webroot -w /var/www/certbot \
   -d dadamda.duckdns.org \
   --email <your-email> --agree-tos --no-eff-email
+```
+
+(Double-check there's a space before every `--flag` - `--email
+you@example.com--agree-tos` with no space between them silently merges
+into one broken argument instead of erroring.)
+
+If a previous attempt is stuck in the renew loop, stop it first:
+
+```bash
+docker compose -f docker-compose.prod.yml stop certbot
+docker rm -f $(docker ps -aq --filter "name=certbot-run") 2>/dev/null
 ```
 
 This adds a new, separate certificate at

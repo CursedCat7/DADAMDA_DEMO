@@ -1,13 +1,17 @@
 import uuid
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, Enum, ForeignKey, Numeric, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
 from app.models.enums import ReservationStatus
 from app.models.mixins import CreatedAtMixin
+
+if TYPE_CHECKING:
+    from app.models.reservation_item import ReservationItem
 
 
 class Reservation(Base, CreatedAtMixin):
@@ -25,3 +29,5 @@ class Reservation(Base, CreatedAtMixin):
         default=ReservationStatus.RESERVED,
     )
     pickup_time: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+    items: Mapped[list["ReservationItem"]] = relationship(back_populates="reservation")

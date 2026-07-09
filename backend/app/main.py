@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import health, market, product, store
+from app.api import health, market, product, reservation, store
 from app.core.config import settings
 from app.core.exception_handlers import register_exception_handlers
 from app.core.logging import setup_logging
@@ -26,3 +26,4 @@ app.include_router(health.router)
 app.include_router(market.router)
 app.include_router(store.router)
 app.include_router(product.router)
+app.include_router(reservation.router)

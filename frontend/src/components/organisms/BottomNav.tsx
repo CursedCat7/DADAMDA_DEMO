@@ -5,11 +5,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/markets", label: "Market", icon: MapPinned },
-  { href: "/favorites", label: "Favorite", icon: Heart },
-  { href: "/reservations", label: "Reservation", icon: Package },
-  { href: "/my", label: "My", icon: User },
+  { href: "/", label: "홈", icon: Home },
+  { href: "/markets", label: "시장", icon: MapPinned },
+  { href: "/favorites", label: "내찜", icon: Heart },
+  { href: "/reservations", label: "예약", icon: Package },
+  { href: "/my", label: "마이", icon: User },
 ] as const;
 
 export function BottomNav() {
@@ -29,9 +29,8 @@ export function BottomNav() {
             className="flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors"
           >
             <span
-              className={`flex size-9 items-center justify-center rounded-full transition-colors ${
-                isActive ? "bg-secondary text-primary" : "text-muted-foreground"
-              }`}
+              className={`flex size-9 items-center justify-center rounded-full transition-colors ${isActive ? "bg-secondary text-primary" : "text-muted-foreground"
+                }`}
             >
               <Icon size={20} strokeWidth={isActive ? 2.4 : 2} />
             </span>

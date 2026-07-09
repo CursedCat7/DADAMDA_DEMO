@@ -259,13 +259,17 @@ Nginx
 
 ---
 
-Cloudflare Tunnel
+~~Cloudflare Tunnel~~ (변경됨, 2026-07-09)
 
-발표장에서
+실제 배포는 Cloudflare Tunnel 대신
 
-공유 가능한 URL 생성
+자체 Ubuntu 클라우드 VM(141.147.179.193) 직접 배포로 결정.
 
-QR 연결
+도메인은 DuckDNS(dadamda.duckdns.org)로 연결,
+
+HTTPS는 Let's Encrypt(certbot)로 발급.
+
+상세 배포 절차는 `DEPLOY.md` 참고.
 
 ---
 

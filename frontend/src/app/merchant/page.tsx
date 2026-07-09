@@ -1,6 +1,10 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Clock, Store } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { completePickup, getMerchantReservations } from "@/lib/api/merchant";
 import { formatPickupTime, formatPrice } from "@/lib/format";
 import { useCurrentUserId } from "@/lib/hooks/useCurrentUserId";
@@ -9,6 +13,12 @@ const STATUS_LABEL: Record<string, string> = {
   예약중: "픽업 대기",
   픽업완료: "수령 완료",
   취소: "취소됨",
+};
+
+const STATUS_VARIANT: Record<string, "accent" | "primary" | "neutral"> = {
+  예약중: "accent",
+  픽업완료: "primary",
+  취소: "neutral",
 };
 
 export default function MerchantPage() {
@@ -44,9 +54,14 @@ export default function MerchantPage() {
 
   return (
     <div className="flex flex-col gap-4 px-4 py-4">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold">상인 화면</h1>
-        <p className="text-sm text-muted-foreground">영희반찬 · 예약 현황</p>
+      <header className="flex items-center gap-3">
+        <span className="flex size-11 items-center justify-center rounded-full bg-secondary text-primary">
+          <Store size={20} />
+        </span>
+        <div className="flex flex-col">
+          <h1 className="text-xl font-extrabold text-foreground">상인 화면</h1>
+          <p className="text-sm text-muted-foreground">영희반찬 · 예약 현황</p>
+        </div>
       </header>
 
       {reservations.length === 0 && (
@@ -55,45 +70,38 @@ export default function MerchantPage() {
 
       <div className="flex flex-col gap-3">
         {reservations.map((reservation) => (
-          <div
-            key={reservation.id}
-            className="flex flex-col gap-2 rounded-2xl border border-border bg-card p-4"
-          >
+          <Card key={reservation.id} className="flex flex-col gap-2 p-4">
             <div className="flex items-center justify-between">
-              <span className="font-semibold">{reservation.reservation_number}</span>
-              <span
-                className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                  reservation.status === "예약중"
-                    ? "bg-primary/10 text-primary"
-                    : reservation.status === "픽업완료"
-                      ? "bg-secondary/10 text-secondary"
-                      : "bg-muted text-muted-foreground"
-                }`}
-              >
+              <span className="font-bold text-foreground">{reservation.reservation_number}</span>
+              <Badge variant={STATUS_VARIANT[reservation.status] ?? "neutral"}>
                 {STATUS_LABEL[reservation.status] ?? reservation.status}
-              </span>
+              </Badge>
             </div>
             <span className="text-sm text-muted-foreground">
               {reservation.customer_nickname} ·{" "}
               {reservation.items.map((item) => `${item.title} x${item.quantity}`).join(", ")}
             </span>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">
+              <span className="flex items-center gap-1 text-muted-foreground">
+                <Clock size={13} />
                 픽업 {formatPickupTime(reservation.pickup_time)}
               </span>
-              <span className="font-medium">{formatPrice(reservation.total_price)}</span>
+              <span className="font-semibold text-foreground">
+                {formatPrice(reservation.total_price)}
+              </span>
             </div>
             {reservation.status === "예약중" && (
-              <button
-                type="button"
+              <Button
+                variant="primary"
+                size="sm"
+                className="mt-1 w-full"
                 onClick={() => pickupMutation.mutate(reservation.id)}
                 disabled={pickupMutation.isPending}
-                className="mt-1 flex h-10 w-full items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground disabled:opacity-60"
               >
                 수령 확인
-              </button>
+              </Button>
             )}
-          </div>
+          </Card>
         ))}
       </div>
     </div>

@@ -1,0 +1,49 @@
+# Alternative to docker-compose.prod.yml, for a server that already runs
+# another reverse-proxy (nginx) via a separate Docker Compose project on
+# ports 80/443 - confirmed setup: container `ca_nginx` on network
+# `ca_network`, conf.d-style config, webroot certbot at /var/www/certbot.
+#
+# This override does NOT start DaDamDa's own nginx/certbot at all (that
+# project's nginx already owns TLS + port 80/443). It just attaches
+# DaDamDa's backend/frontend to that project's `ca_network` so its nginx
+# can reach them by container name. See DEPLOY.md "Coexisting with an
+# existing nginx" for the full sequence, including the nginx conf.d file
+# to copy into the *other* project.
+#
+# Usage (only start the services that need to run - never `nginx`/
+# `certbot` from the base file in this mode):
+#   docker compose -f docker-compose.yml -f docker-compose.shared-nginx.yml \
+#     up -d --build postgres redis backend frontend
+services:
+  postgres:
+    restart: always
+
+  redis:
+    restart: always
+
+  backend:
+    restart: always
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    networks:
+      - dadamda-network
+      - ca_network
+
+  frontend:
+    restart: always
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_KAKAO_MAP_KEY: ${NEXT_PUBLIC_KAKAO_MAP_KEY}
+        NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME}
+        NEXT_PUBLIC_VERSION: ${NEXT_PUBLIC_VERSION}
+    networks:
+      - dadamda-network
+      - ca_network
+
+networks:
+  ca_network:
+    external: true

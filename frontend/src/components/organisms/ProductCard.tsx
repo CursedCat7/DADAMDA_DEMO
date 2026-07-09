@@ -17,19 +17,17 @@ export function ProductCard({ product }: { product: ProductListItem }) {
             <ShoppingBasket size={26} className="text-primary" />
           )}
         </div>
-        <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5">
+        <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
           <span className="truncate text-sm font-semibold text-foreground">{product.title}</span>
           <div className="flex items-center gap-1.5">
             <Badge variant="accent">{product.discount_percent}%</Badge>
-            <span className="text-base font-bold text-foreground">
+            <span className="truncate text-base font-bold text-foreground">
               {formatPrice(product.discount_price)}
             </span>
-            <span className="text-xs text-muted-foreground line-through">
-              {formatPrice(product.original_price)}
-            </span>
           </div>
-          <span className="text-xs text-muted-foreground">
-            남은 수량 {product.remain_quantity}개
+          <span className="truncate text-xs text-muted-foreground">
+            <span className="line-through">{formatPrice(product.original_price)}</span>
+            {" · "}남은 {product.remain_quantity}개
           </span>
         </div>
       </Card>

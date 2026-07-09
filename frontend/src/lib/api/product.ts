@@ -18,6 +18,10 @@ export type ProductDetail = ProductListItem & {
   description: string | null;
 };
 
+export function getProducts(): Promise<ProductListItem[]> {
+  return apiFetch<ProductListItem[]>("/products");
+}
+
 export function getStoreProducts(storeId: number): Promise<ProductListItem[]> {
   return apiFetch<ProductListItem[]>(`/stores/${storeId}/products`);
 }

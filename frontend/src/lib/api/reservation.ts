@@ -5,6 +5,7 @@ export type ReservationItem = {
   title: string;
   quantity: number;
   price: number;
+  original_price: number;
 };
 
 export type Reservation = {
@@ -31,6 +32,19 @@ export function createReservation(
 
 export function getReservation(userId: string, reservationId: number): Promise<Reservation> {
   return apiFetch<Reservation>(`/reservations/${reservationId}`, {
+    headers: { "X-User-Id": userId },
+  });
+}
+
+export function getReservations(userId: string): Promise<Reservation[]> {
+  return apiFetch<Reservation[]>("/reservations", {
+    headers: { "X-User-Id": userId },
+  });
+}
+
+export function cancelReservation(userId: string, reservationId: number): Promise<Reservation> {
+  return apiFetch<Reservation>(`/reservations/${reservationId}`, {
+    method: "DELETE",
     headers: { "X-User-Id": userId },
   });
 }

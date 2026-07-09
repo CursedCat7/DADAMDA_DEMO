@@ -31,6 +31,7 @@ def _to_detail(reservation: Reservation) -> ReservationDetail:
                 title=item.product.title,
                 quantity=item.quantity,
                 price=item.price,
+                original_price=item.product.original_price,
             )
             for item in reservation.items
         ],

@@ -15,6 +15,7 @@ class ReservationItemDetail(BaseModel):
     title: str
     quantity: int
     price: int
+    original_price: int
 
     model_config = {"from_attributes": True}
 

@@ -1,7 +1,9 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { ImageIcon } from "lucide-react";
 import { useParams } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 import { ProductCard } from "@/components/organisms/ProductCard";
 import { getStoreProducts } from "@/lib/api/product";
 import { getStore } from "@/lib/api/store";
@@ -38,27 +40,25 @@ export default function StoreDetailPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex h-40 items-center justify-center bg-muted text-sm text-muted-foreground">
-        상점 사진 준비중
+      <div className="flex h-40 items-center justify-center bg-secondary text-secondary-foreground/60">
+        <ImageIcon size={32} />
       </div>
 
       <div className="flex flex-col gap-2 px-4">
         <div className="flex items-center gap-2">
-          <h1 className="text-xl font-semibold">{store.name}</h1>
-          <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-            {store.category}
-          </span>
+          <h1 className="text-xl font-extrabold text-foreground">{store.name}</h1>
+          <Badge variant="secondary">{store.category}</Badge>
         </div>
         {store.description && (
           <p className="text-sm text-muted-foreground">{store.description}</p>
         )}
-        <span className="text-sm font-medium text-primary">
+        <Badge variant="primary" className="w-fit">
           오늘 할인 {store.discount_count}개
-        </span>
+        </Badge>
       </div>
 
       <div className="flex flex-col gap-3 px-4 pb-4">
-        <h2 className="text-lg font-semibold">대표상품</h2>
+        <h2 className="text-base font-bold text-foreground">대표상품</h2>
         {productsQuery.isLoading && (
           <p className="text-sm text-muted-foreground">불러오는 중...</p>
         )}
@@ -67,9 +67,11 @@ export default function StoreDetailPage() {
             지금 예약 가능한 상품이 없습니다.
           </p>
         )}
-        {onSaleProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        <div className="flex flex-col gap-3">
+          {onSaleProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
       </div>
     </div>
   );

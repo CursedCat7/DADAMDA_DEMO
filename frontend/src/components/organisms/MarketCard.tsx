@@ -17,11 +17,25 @@ export function MarketCard({
     <Link href={`/markets/${market.id}`} className={className}>
       <Card className="flex flex-col gap-3 p-4">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-col gap-1">
-            <span className="text-base font-bold text-foreground">{market.name}</span>
-            <span className="text-xs text-muted-foreground">{market.address}</span>
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary">
+              {market.thumbnail ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={market.thumbnail}
+                  alt={market.name}
+                  className="size-full object-cover"
+                />
+              ) : (
+                <Store size={22} className="text-primary" />
+              )}
+            </div>
+            <div className="flex min-w-0 flex-col gap-1">
+              <span className="truncate text-base font-bold text-foreground">{market.name}</span>
+              <span className="truncate text-xs text-muted-foreground">{market.address}</span>
+            </div>
           </div>
-          {onViewOnMap ? (
+          {onViewOnMap && (
             <button
               type="button"
               onClick={(e) => {
@@ -34,10 +48,6 @@ export function MarketCard({
               <Map size={13} />
               지도에서 보기
             </button>
-          ) : (
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
-              <Store size={17} />
-            </span>
           )}
         </div>
         <div className="flex items-center gap-1.5">

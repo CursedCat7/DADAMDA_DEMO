@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import type { StoreListItem } from "@/lib/api/store";
 
 export function StoreCard({
@@ -9,19 +11,16 @@ export function StoreCard({
   className?: string;
 }) {
   return (
-    <Link
-      href={`/stores/${store.id}`}
-      className={`flex flex-col gap-1 rounded-2xl border border-border bg-card p-4 shadow-sm ${className}`}
-    >
-      <div className="flex items-center gap-2">
-        <span className="text-base font-semibold">{store.name}</span>
-        <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-          {store.category}
-        </span>
-      </div>
-      {store.description && (
-        <span className="text-sm text-muted-foreground">{store.description}</span>
-      )}
+    <Link href={`/stores/${store.id}`} className={className}>
+      <Card className="flex flex-col gap-2 p-4">
+        <div className="flex items-center gap-2">
+          <span className="text-base font-bold text-foreground">{store.name}</span>
+          <Badge variant="secondary">{store.category}</Badge>
+        </div>
+        {store.description && (
+          <span className="text-sm text-muted-foreground">{store.description}</span>
+        )}
+      </Card>
     </Link>
   );
 }

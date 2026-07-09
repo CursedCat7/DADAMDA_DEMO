@@ -69,7 +69,9 @@ docker compose up -d
 
 Framework
 
-Next.js 15
+Next.js 16
+
+(Task 002 시점 최신 안정 버전으로 스캐폴딩 및 문서 갱신, 2026-07-09)
 
 Reason
 

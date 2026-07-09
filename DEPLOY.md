@@ -39,8 +39,30 @@ cp .env.production.example .env
 ```
 
 Edit `.env`: set a real `POSTGRES_PASSWORD` and `JWT_SECRET` (e.g.
-`openssl rand -hex 32` for the secret). Leave the `dadamda.duckdns.org`
-URLs as-is unless the domain changes.
+`openssl rand -hex 32` for the secret), and set `NEXT_PUBLIC_KAKAO_MAP_KEY`
+(see step 1.5 below - the Kakao Map view will silently show a "도메인이
+등록되지 않았습니다"-style error without it). Leave the
+`dadamda.duckdns.org` URLs as-is unless the domain changes.
+
+## 1.5. Register the domain with the Kakao Maps key
+
+Kakao rejects the JS SDK for any origin that isn't explicitly registered
+against the app the key belongs to - this bit local dev during
+verification, and will bite production too if skipped:
+
+1. [Kakao Developers](https://developers.kakao.com) → 내 애플리케이션 →
+   select the app the key belongs to → 앱 설정 → 플랫폼 → Web 플랫폼 등록.
+2. Add **`https://dadamda.duckdns.org`** as a registered site domain (no
+   trailing slash). For local dev, also add `http://localhost` (or
+   whichever origin you actually browse from, e.g. `http://localhost:3000`
+   if hitting the frontend container directly instead of through nginx).
+3. Changes there apply within a few minutes - no redeploy needed on this
+   side, since the key itself doesn't change, just what origins it accepts.
+
+If the map view shows "카카오맵 SDK를 불러오지 못했습니다.", check the
+browser console network tab for the `dapi.kakao.com/v2/maps/sdk.js`
+request: a 401 with `"domain mismatched"` in the body means step 2 above
+wasn't done (or was done for the wrong domain/app).
 
 ## 2. First-time TLS certificate (one-time only)
 
@@ -78,6 +100,22 @@ curl -I https://dadamda.duckdns.org/
 curl -s https://dadamda.duckdns.org/api/v1/health
 ```
 
+## 3.5. Seed demo data for the presentation
+
+The database starts empty - there's no market/store/product data until
+you load some. For the competition demo, reset to the known-good
+모래내시장 dataset (13 stores, 14 products, matches what the Kakao Map
+view expects to show):
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.prod.yml exec -T postgres \
+  psql -U dadamda -d dadamda < scripts/seed_demo_data.sql
+```
+
+This is destructive (`TRUNCATE ... RESTART IDENTITY`) by design so it's
+safe to re-run before every rehearsal - never point it at anything but
+this disposable demo database.
+
 ## 4. Certificate renewal
 
 The `certbot` service in `docker-compose.prod.yml` runs `certbot renew`
@@ -107,9 +145,14 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml exec backend ale
   is auto-loaded by plain `docker compose up`, but explicit `-f` combos
   like the prod one above skip it automatically - that's intentional,
   not a file to merge in for prod.
-- `NEXT_PUBLIC_*` values are baked into the frontend image at build time.
-  Changing `.env`'s `NEXT_PUBLIC_*` values requires rebuilding the frontend
-  (`up -d --build frontend`), not just a restart.
+- `NEXT_PUBLIC_*` values (including `NEXT_PUBLIC_KAKAO_MAP_KEY`) are baked
+  into the frontend image at build time. Changing any of them in `.env`
+  requires rebuilding the frontend (`up -d --build frontend`), not just a
+  restart.
+- The Kakao Map view (`/markets` → 지도 보기) is lazy-loaded - the SDK
+  script is never fetched from the list view, only once the map tab is
+  actually opened. See step 1.5 for the domain-registration step that
+  makes it actually render instead of erroring.
 - The demo DB is disposable dev/competition data, not a real production
   database - there's no backup strategy here yet. Add one before treating
   this as anything more than a demo deployment.

@@ -199,7 +199,7 @@ Verify:
 
 ```bash
 curl -I https://dadamda.duckdns.org/
-curl -s https://dadamda.duckdns.org/api/v1/health
+curl -s https://dadamda.duckdns.org/health
 ```
 
 ### Updating DaDamDa later (Path B)
@@ -255,7 +255,7 @@ Verify:
 
 ```bash
 curl -I https://dadamda.duckdns.org/
-curl -s https://dadamda.duckdns.org/api/v1/health
+curl -s https://dadamda.duckdns.org/health
 ```
 
 ### A3. Certificate renewal

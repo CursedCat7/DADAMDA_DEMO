@@ -38,7 +38,7 @@ export default function Home() {
         {markets && markets.length > 0 && (
           <div className="flex gap-3 overflow-x-auto">
             {markets.map((market) => (
-              <MarketCard key={market.id} market={market} />
+              <MarketCard key={market.id} market={market} className="w-56 shrink-0" />
             ))}
           </div>
         )}

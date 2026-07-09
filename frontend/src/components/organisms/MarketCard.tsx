@@ -1,11 +1,17 @@
 import Link from "next/link";
 import type { MarketListItem } from "@/lib/api/market";
 
-export function MarketCard({ market }: { market: MarketListItem }) {
+export function MarketCard({
+  market,
+  className = "",
+}: {
+  market: MarketListItem;
+  className?: string;
+}) {
   return (
     <Link
       href={`/markets/${market.id}`}
-      className="flex w-56 shrink-0 flex-col gap-2 rounded-2xl border border-border bg-card p-4 shadow-sm"
+      className={`flex flex-col gap-2 rounded-2xl border border-border bg-card p-4 shadow-sm ${className}`}
     >
       <span className="text-base font-semibold">{market.name}</span>
       <span className="text-sm text-muted-foreground">{market.address}</span>

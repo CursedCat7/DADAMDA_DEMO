@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BottomNav } from "@/components/organisms/BottomNav";
+import { SplashScreen } from "@/components/organisms/SplashScreen";
 import { Providers } from "@/lib/providers";
 import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "./globals.css";
@@ -18,8 +19,10 @@ export default function RootLayout({
     <html lang="ko" className="h-full antialiased">
       <body className="mx-auto flex min-h-full max-w-[430px] flex-col">
         <Providers>
-          <main className="flex-1 pb-4">{children}</main>
-          <BottomNav />
+          <SplashScreen>
+            <main className="flex-1 pb-4">{children}</main>
+            <BottomNav />
+          </SplashScreen>
         </Providers>
       </body>
     </html>

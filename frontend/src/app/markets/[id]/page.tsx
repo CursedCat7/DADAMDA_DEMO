@@ -55,8 +55,17 @@ export default function MarketDetailPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex h-40 items-center justify-center bg-secondary text-secondary-foreground/60">
-        <ImageIcon size={32} />
+      <div className="flex h-40 items-center justify-center overflow-hidden bg-secondary text-secondary-foreground/60">
+        {market.thumbnail ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={market.thumbnail}
+            alt={market.name}
+            className="size-full object-cover"
+          />
+        ) : (
+          <ImageIcon size={32} />
+        )}
       </div>
 
       <div className="flex flex-col gap-2 px-4">

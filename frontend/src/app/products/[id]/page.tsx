@@ -32,8 +32,17 @@ export default function ProductDetailPage() {
 
   return (
     <div className="flex flex-col gap-4 pb-24">
-      <div className="flex h-64 items-center justify-center bg-secondary text-secondary-foreground/60">
-        <ImageIcon size={40} />
+      <div className="flex h-64 items-center justify-center overflow-hidden bg-secondary text-secondary-foreground/60">
+        {product.image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={product.image_url}
+            alt={product.title}
+            className="size-full object-cover"
+          />
+        ) : (
+          <ImageIcon size={40} />
+        )}
       </div>
 
       <div className="flex flex-col gap-3 px-4">

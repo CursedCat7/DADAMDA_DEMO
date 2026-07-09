@@ -1,8 +1,11 @@
 "use client";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { Clock, Minus, Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { createReservation } from "@/lib/api/reservation";
 import { getProduct } from "@/lib/api/product";
 import { formatPickupTime, formatPrice } from "@/lib/format";
@@ -43,42 +46,44 @@ export default function ReservationInputPage() {
   const totalPrice = product.discount_price * quantity;
 
   return (
-    <div className="flex flex-col gap-6 px-4 py-4">
-      <h1 className="text-xl font-semibold">예약하기</h1>
+    <div className="flex flex-col gap-5 px-4 py-4 pb-28">
+      <h1 className="text-xl font-extrabold text-foreground">예약하기</h1>
 
-      <div className="flex flex-col gap-1 rounded-2xl border border-border bg-card p-4">
-        <span className="text-base font-semibold">{product.title}</span>
-        <span className="text-sm text-muted-foreground">
-          픽업 가능 {formatPickupTime(product.pickup_start)} - {formatPickupTime(product.pickup_end)}
+      <Card className="flex flex-col gap-1 p-4">
+        <span className="text-base font-bold text-foreground">{product.title}</span>
+        <span className="flex items-center gap-1 text-sm text-muted-foreground">
+          <Clock size={13} />
+          픽업 가능 {formatPickupTime(product.pickup_start)} -{" "}
+          {formatPickupTime(product.pickup_end)}
         </span>
-      </div>
+      </Card>
 
-      <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
-        <span className="text-sm font-medium">수량</span>
+      <Card className="flex items-center justify-between p-4">
+        <span className="text-sm font-semibold text-foreground">수량</span>
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
             disabled={quantity <= 1}
-            className="flex size-8 items-center justify-center rounded-full bg-muted text-lg disabled:opacity-40"
+            className="flex size-9 items-center justify-center rounded-full bg-secondary text-primary disabled:opacity-30"
           >
-            −
+            <Minus size={16} />
           </button>
-          <span className="w-6 text-center text-base font-semibold">{quantity}</span>
+          <span className="w-6 text-center text-base font-bold text-foreground">{quantity}</span>
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.min(product.remain_quantity, q + 1))}
             disabled={quantity >= product.remain_quantity}
-            className="flex size-8 items-center justify-center rounded-full bg-muted text-lg disabled:opacity-40"
+            className="flex size-9 items-center justify-center rounded-full bg-secondary text-primary disabled:opacity-30"
           >
-            +
+            <Plus size={16} />
           </button>
         </div>
-      </div>
+      </Card>
 
       <div className="flex items-center justify-between px-1">
         <span className="text-sm text-muted-foreground">결제 금액</span>
-        <span className="text-xl font-bold text-primary">{formatPrice(totalPrice)}</span>
+        <span className="text-xl font-extrabold text-foreground">{formatPrice(totalPrice)}</span>
       </div>
 
       {reserveMutation.isError && (
@@ -89,14 +94,16 @@ export default function ReservationInputPage() {
         </p>
       )}
 
-      <button
-        type="button"
-        onClick={() => reserveMutation.mutate()}
-        disabled={!userId || reserveMutation.isPending}
-        className="flex h-12 w-full items-center justify-center rounded-xl bg-primary text-base font-semibold text-primary-foreground disabled:opacity-60"
-      >
-        {reserveMutation.isPending ? "예약 중..." : "예약하기"}
-      </button>
+      <div className="fixed inset-x-0 bottom-[70px] mx-auto max-w-[430px] bg-gradient-to-t from-background via-background/95 to-transparent px-4 pt-6 pb-3">
+        <Button
+          variant="primary"
+          size="lg"
+          onClick={() => reserveMutation.mutate()}
+          disabled={!userId || reserveMutation.isPending}
+        >
+          {reserveMutation.isPending ? "예약 중..." : "예약하기"}
+        </Button>
+      </div>
     </div>
   );
 }
